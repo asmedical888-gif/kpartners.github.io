@@ -7,13 +7,15 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    fontFamily: { 
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'PingFang SC', 'Hiragino Sans', 'Apple SD Gothic Neo', 'system-ui', 'sans-serif'] 
+                    },
                     colors: {
                         'k-black': '#000000',
                         'k-gray': '#86868b',
@@ -26,13 +28,25 @@
     </script>
 
     <style>
-        body { background-color: #ffffff; color: #1d1d1f; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+        body { 
+            background-color: #ffffff; 
+            color: #1d1d1f; 
+            -webkit-font-smoothing: antialiased; 
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            scroll-behavior: smooth; 
+        }
         
-        /* 苹果标志性的渐变文字 - 极致细腻 */
-        .text-gradient {
-            background: linear-gradient(180deg, #000000 0%, #666666 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .hero-heading {
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            font-feature-settings: 'cv11', 'ss01', 'ss02', 'tnum';
+        }
+
+        :lang(zh) .hero-heading, :lang(ja) .hero-heading, :lang(ko) .hero-heading {
+            letter-spacing: -0.01em; 
+            font-weight: 700 !important;
+            line-height: 1.25;
         }
 
         .gold-gradient {
@@ -41,201 +55,388 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* 呼吸感卡片 */
         .apple-card {
             background: #f5f5f7;
-            border-radius: 34px;
+            border-radius: 36px;
             transition: all 0.8s cubic-bezier(0.15, 0, 0.15, 1);
         }
         .apple-card:hover {
-            transform: scale(1.015);
+            transform: scale(1.008);
             background: #ffffff;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.05);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.04);
         }
 
-        /* 侧边栏动画 */
-        #portfolio-drawer { transition: transform 0.8s cubic-bezier(0.15, 0, 0.15, 1); }
-        .drawer-open { transform: translateX(0) !important; }
+        #lang-dropdown { 
+            display: none; 
+            animation: dropdownFade 0.4s cubic-bezier(0.15, 0, 0.15, 1);
+            backdrop-filter: blur(40px);
+            background-color: rgba(255, 255, 255, 0.85);
+            z-index: 100;
+        }
+        #lang-dropdown.active { display: block; }
+
+        @keyframes dropdownFade {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         .fade-in {
             animation: fadeIn 1.5s cubic-bezier(0.15, 0, 0.15, 1) forwards;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(40px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         ::-webkit-scrollbar { display: none; }
+        
+        .toast {
+            position: fixed; bottom: 3rem; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.92); color: white; padding: 0.9rem 2rem;
+            border-radius: 99px; font-size: 0.75rem; font-weight: 700; z-index: 200;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s;
+            backdrop-filter: blur(10px);
+        }
+
+        .icon-btn {
+            transition: all 0.5s cubic-bezier(0.15, 0, 0.15, 1);
+            background: #ffffff;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+        .icon-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            border-color: rgba(0,0,0,0.08);
+        }
+
+        #portfolio-drawer { transition: transform 0.8s cubic-bezier(0.15, 0, 0.15, 1); }
+        .drawer-open { transform: translateX(0) !important; }
+
+        input, textarea {
+            font-size: 14px !important;
+            letter-spacing: -0.01em;
+            background: #fbfbfd !important;
+            border: 1px solid transparent !important;
+            transition: all 0.3s ease;
+        }
+        input:focus, textarea:focus {
+            background: #ffffff !important;
+            border-color: rgba(0,0,0,0.1) !important;
+        }
     </style>
 </head>
-<body class="font-sans overflow-x-hidden">
+<body class="font-sans overflow-x-hidden" id="main-body" onclick="closeLangDropdown()">
+
+    <div id="toast" class="toast">Identifier Copied</div>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
+    <nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-2xl border-b border-gray-100/50">
         <div class="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
-            <div class="text-xl font-bold tracking-tighter cursor-pointer" onclick="window.scrollTo(0,0)">K partners</div>
-            <div class="hidden md:flex space-x-10 text-[11px] font-bold tracking-[0.2em] uppercase opacity-50">
-                <button onclick="toggleDrawer('citizenship')" class="hover:opacity-100 transition-opacity">Citizenship</button>
-                <button onclick="toggleDrawer('residency')" class="hover:opacity-100 transition-opacity">Residency</button>
-                <button onclick="toggleDrawer('us')" class="hover:opacity-100 transition-opacity">US Desk</button>
+            <div class="text-xl font-[900] tracking-tighter cursor-pointer" onclick="window.scrollTo(0,0)">K partners</div>
+            
+            <div class="hidden lg:flex items-center space-x-12 text-[10px] font-bold tracking-[0.3em] uppercase opacity-40">
+                <button onclick="toggleDrawer('citizenship')" data-i18n="nav-citizenship">Citizenship</button>
+                <button onclick="toggleDrawer('residency')" data-i18n="nav-residency">Residency</button>
+                <button onclick="toggleDrawer('usdesk')" data-i18n="nav-usdesk">US Desk</button>
+                <a href="#contact" data-i18n="nav-contact">Contact</a>
             </div>
-            <button onclick="toggleAI()" class="text-[11px] font-bold px-5 py-2 bg-black text-white rounded-full hover:scale-105 transition-all">
-                ✨ AI PLANNER
-            </button>
+
+            <div class="flex items-center space-x-5">
+                <div class="relative">
+                    <button onclick="event.stopPropagation(); toggleLangDropdown()" class="flex items-center space-x-2 bg-k-light/60 px-4 py-2 rounded-full hover:bg-gray-200 transition-all active:scale-95">
+                        <span id="current-lang-text" class="text-[9px] font-extrabold uppercase tracking-[0.1em]">English</span>
+                        <svg class="w-2.5 h-2.5 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="lang-dropdown" class="absolute right-0 mt-3 w-48 rounded-[26px] shadow-[0_40px_80px_rgba(0,0,0,0.12)] border border-gray-100 overflow-hidden py-3">
+                        <button onclick="switchLanguage('en')" class="w-full text-left px-7 py-3 text-[10px] font-bold hover:bg-black hover:text-white transition-colors uppercase">English</button>
+                        <button onclick="switchLanguage('zh')" class="w-full text-left px-7 py-3 text-[10px] font-bold hover:bg-black hover:text-white transition-colors">简体中文</button>
+                        <button onclick="switchLanguage('ja')" class="w-full text-left px-7 py-3 text-[10px] font-bold hover:bg-black hover:text-white transition-colors">日本語</button>
+                        <button onclick="switchLanguage('ko')" class="w-full text-left px-7 py-3 text-[10px] font-bold hover:bg-black hover:text-white transition-colors">한국어</button>
+                        <button onclick="switchLanguage('id')" class="w-full text-left px-7 py-3 text-[10px] font-bold hover:bg-black hover:text-white transition-colors uppercase">Indonesia</button>
+                    </div>
+                </div>
+                <button onclick="toggleAI()" class="text-[10px] font-[800] px-7 py-2.5 bg-black text-white rounded-full hover:shadow-xl transition-all tracking-widest active:scale-95">
+                    PLANNER
+                </button>
+            </div>
         </div>
     </nav>
 
-    <!-- Hero Section: 回归最初的高级感 -->
-    <section class="h-screen flex flex-col justify-center items-center text-center px-6">
-        <h1 class="text-6xl md:text-[110px] font-extrabold tracking-tight mb-8 fade-in text-gradient leading-[1.05]">
-            Freedom is <br> <span class="gold-gradient">The Ultimate Asset.</span>
-        </h1>
-        <p class="text-lg md:text-2xl text-k-gray font-light max-w-3xl fade-in" style="animation-delay: 0.3s;">
-            The world's most comprehensive portfolio of citizenship <br class="hidden md:block"> and residency architecture.
-        </p>
-        <div class="mt-14 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8 fade-in" style="animation-delay: 0.6s;">
-            <button onclick="toggleDrawer('citizenship')" class="text-blue-600 font-medium text-lg hover:underline">Explore Portfolio ></button>
-            <button onclick="toggleAI()" class="text-k-gray font-medium text-lg hover:text-black transition-colors">Speak with AI Analyst</button>
+    <!-- Hero Section -->
+    <section class="h-screen flex flex-col justify-center items-center text-center px-8">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="hero-heading text-4xl md:text-[82px] font-[900] mb-8 fade-in leading-[1.05]">
+                <span class="block text-black" data-i18n="hero-title-1">Freedom is</span>
+                <span class="block gold-gradient" data-i18n="hero-title-2">The Ultimate Asset</span>
+            </h1>
+            <p class="text-lg md:text-xl text-k-gray font-light max-w-3xl mx-auto fade-in leading-relaxed" style="animation-delay: 0.3s;" data-i18n="hero-desc">
+                The world's most comprehensive portfolio of citizenship and residency architecture.
+            </p>
+            <div class="mt-14 flex flex-col md:flex-row justify-center space-y-6 md:space-y-0 md:space-x-12 fade-in" style="animation-delay: 0.6s;">
+                <button onclick="toggleDrawer('citizenship')" class="text-blue-600 font-semibold text-lg hover:underline" data-i18n="hero-cta-1">Explore Portfolio ></button>
+                <a href="#contact" class="text-k-gray font-medium text-lg hover:text-black transition-colors" data-i18n="hero-cta-2">Private Consultation</a>
+            </div>
         </div>
     </section>
 
-    <!-- Featured Spotlight: 标志性的精选展示 -->
-    <section class="pb-32 px-6">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Malta - Signature -->
+    <!-- Featured -->
+    <section class="pb-32 px-8">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
             <div class="apple-card p-14 flex flex-col justify-between h-[600px] md:col-span-2 bg-[#1d1d1f] text-white overflow-hidden relative">
-                <div class="z-10 max-w-xl">
-                    <span class="text-[10px] font-bold text-k-gold uppercase tracking-[0.3em]">The Gold Standard</span>
-                    <h3 class="text-5xl font-bold mt-6 mb-8">Malta MEIN</h3>
-                    <p class="text-gray-400 text-xl font-light leading-relaxed">
-                        The world’s most prestigious citizenship program. Unmatched security, global mobility, and a legacy for generations.
+                <div class="z-10 max-w-2xl">
+                    <span class="text-[10px] font-bold text-k-gold uppercase tracking-[0.4em]" data-i18n="card-malta-tag">The Sovereign Standard</span>
+                    <h3 class="hero-heading text-5xl font-[900] mt-8 mb-8">Malta MEIN</h3>
+                    <p class="text-gray-400 text-xl font-light leading-relaxed mb-10" data-i18n="card-malta-desc">
+                        The world’s most prestigious citizenship program. Unmatched security and a legacy for generations.
                     </p>
                 </div>
                 <div class="z-10 flex justify-between items-end">
-                    <div class="text-sm font-medium tracking-widest opacity-40 uppercase">European Union • 12 Months</div>
-                    <button onclick="generateBrief('Malta')" class="px-8 py-3 bg-white text-black rounded-full font-bold text-xs hover:bg-k-gold hover:text-white transition-all">Details</button>
+                    <div class="text-[10px] font-bold tracking-[0.3em] opacity-40 uppercase" data-i18n="card-malta-footer">European Union • 12 Months</div>
+                    <button onclick="generateBrief('Malta')" class="px-10 py-3.5 bg-white text-black rounded-full font-bold text-[10px] tracking-widest hover:bg-k-gold hover:text-white transition-all active:scale-95" data-i18n="btn-details">DETAILS</button>
                 </div>
-                <!-- Subtle decorative background element -->
-                <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-k-gold/10 blur-[120px] rounded-full"></div>
+                <div class="absolute -right-40 -bottom-40 w-[600px] h-[600px] bg-k-gold/10 blur-[150px] rounded-full"></div>
             </div>
 
-            <!-- Albania -->
-            <div class="apple-card p-12 flex flex-col justify-between h-[500px]">
+            <div class="apple-card p-12 flex flex-col justify-between h-[480px]">
                 <div>
-                    <span class="text-[10px] font-bold text-k-gold uppercase tracking-[0.3em]">Balkan Frontier</span>
-                    <h3 class="text-3xl font-bold mt-4">Albania</h3>
-                    <p class="text-k-gray mt-6 font-light leading-relaxed">Strategic European gateway with an emerging citizenship pathway and high-yield potential.</p>
+                    <span class="text-[10px] font-bold text-k-gold uppercase tracking-[0.4em]" data-i18n="card-albania-tag">Balkan Frontier</span>
+                    <h3 class="hero-heading text-3xl font-[900] mt-6">Albania</h3>
+                    <p class="text-k-gray mt-8 font-light leading-relaxed" data-i18n="card-albania-desc">Strategic European gateway with an emerging citizenship pathway.</p>
                 </div>
-                <button onclick="generateBrief('Albania')" class="w-fit text-blue-600 font-bold text-xs tracking-widest uppercase hover:underline">Intelligence Brief</button>
+                <button onclick="generateBrief('Albania')" class="w-fit text-blue-600 font-bold text-[10px] tracking-widest uppercase hover:underline" data-i18n="btn-brief">Intelligence Brief</button>
             </div>
 
-            <!-- Georgia -->
-            <div class="apple-card p-12 flex flex-col justify-between h-[500px]">
+            <div class="apple-card p-12 flex flex-col justify-between h-[480px]">
                 <div>
-                    <span class="text-[10px] font-bold text-blue-500 uppercase tracking-[0.3em]">Efficiency Leader</span>
-                    <h3 class="text-3xl font-bold mt-4">Georgia</h3>
-                    <p class="text-k-gray mt-6 font-light leading-relaxed">A pro-business jurisdiction offering unique territorial tax benefits and 30-day processing.</p>
+                    <span class="text-[10px] font-bold text-blue-500 uppercase tracking-[0.4em]" data-i18n="card-georgia-tag">Efficiency Leader</span>
+                    <h3 class="hero-heading text-3xl font-[900] mt-6">Georgia</h3>
+                    <p class="text-k-gray mt-8 font-light leading-relaxed" data-i18n="card-georgia-desc">A pro-business jurisdiction with 30-day processing time.</p>
                 </div>
-                <button onclick="generateBrief('Georgia')" class="w-fit text-blue-600 font-bold text-xs tracking-widest uppercase hover:underline">Intelligence Brief</button>
+                <button onclick="generateBrief('Georgia')" class="w-fit text-blue-600 font-bold text-[10px] tracking-widest uppercase hover:underline" data-i18n="btn-brief">Intelligence Brief</button>
             </div>
         </div>
     </section>
 
-    <!-- Portfolio Drawer (Archive) -->
-    <div id="portfolio-overlay" onclick="closeDrawer()" class="fixed inset-0 bg-black/10 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity z-[60]"></div>
-    <div id="portfolio-drawer" class="fixed top-0 right-0 w-full md:w-[580px] h-full bg-white z-[70] translate-x-full shadow-[-20px_0_60px_rgba(0,0,0,0.05)] p-12 overflow-y-auto">
-        <div class="flex justify-between items-center mb-20">
-            <h2 id="drawer-title" class="text-4xl font-bold tracking-tight">Archive</h2>
-            <button onclick="closeDrawer()" class="w-10 h-10 flex items-center justify-center rounded-full bg-k-light text-xl">×</button>
-        </div>
-        <div id="drawer-content" class="space-y-14">
-            <!-- Portfolio sections will be injected here -->
-        </div>
-    </div>
-
-    <!-- AI Assistant Panel -->
-    <div id="ai-assistant" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-white/60 backdrop-blur-xl p-4">
-        <div class="bg-white w-full max-w-2xl rounded-[40px] shadow-[0_40px_100px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col max-h-[85vh]">
-            <div class="p-10 border-b border-gray-100 flex justify-between items-center">
-                <div>
-                    <h3 class="text-2xl font-bold">AI Strategy Engine</h3>
-                    <p class="text-sm text-k-gray">Cross-analyzing 50+ jurisdictions in real-time.</p>
-                </div>
-                <button onclick="toggleAI()" class="text-2xl opacity-20 hover:opacity-100 transition-opacity">×</button>
-            </div>
-            <div id="ai-content" class="p-10 overflow-y-auto flex-1 bg-k-light/20">
-                <div id="chat-history" class="space-y-8">
-                    <div class="bg-white p-7 rounded-[30px] rounded-tl-none shadow-sm max-w-[85%] text-[15px] leading-relaxed">
-                        I am the K Partners Collective Intelligence. Describe your vision for global mobility, tax residency, or wealth preservation.
+    <!-- Strategic Index -->
+    <section class="py-32 px-8 bg-white border-t border-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="apple-card p-10 md:p-14">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-6">
+                    <div>
+                        <span class="text-[10px] font-bold text-k-gold uppercase tracking-[0.4em]" data-i18n="chart-tag">Data Architecture</span>
+                        <h2 class="hero-heading text-3xl font-[900] mt-4" data-i18n="chart-title">Mobility Index 2025</h2>
+                    </div>
+                    <div class="flex gap-12">
+                        <div class="text-center">
+                            <p class="text-[10px] font-bold text-k-gray uppercase tracking-widest mb-2" data-i18n="chart-stat-1">Portfolio Value</p>
+                            <p class="text-xl font-[900]">+22.1%</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-[10px] font-bold text-k-gray uppercase tracking-widest mb-2" data-i18n="chart-stat-2">Access Points</p>
+                            <p class="text-xl font-[900]">190+</p>
+                        </div>
                     </div>
                 </div>
-                <div id="ai-loading" class="hidden mt-6 text-blue-600 text-xs font-bold tracking-[0.2em] uppercase">Processing Analysis...</div>
-            </div>
-            <div class="p-10 bg-white border-t border-gray-100">
-                <div class="flex gap-4">
-                    <input id="ai-input" type="text" placeholder="Describe your objectives..." 
-                           class="flex-1 bg-k-light border-none rounded-2xl px-6 py-5 focus:ring-1 focus:ring-black outline-none text-[15px]">
-                    <button onclick="askAI()" class="bg-black text-white px-8 py-5 rounded-2xl font-bold hover:scale-[0.98] transition-all">✨</button>
+                <div class="h-[350px] w-full">
+                    <canvas id="mobilityChart"></canvas>
                 </div>
             </div>
         </div>
+    </section>
+
+    <!-- Contact Section: 回归完美的 50/50 对称感 -->
+    <section id="contact" class="py-48 bg-k-light/40 border-t border-gray-100/50">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:items-stretch">
+                
+                <!-- 左侧内容：垂直分布以平衡右侧高度 -->
+                <div class="flex flex-col justify-between py-4">
+                    <div class="space-y-8">
+                        <h2 class="hero-heading text-3xl md:text-[54px] font-[900] leading-[1.1]">
+                            <span class="block text-black" data-i18n="contact-title-1">Curate Your</span>
+                            <span class="block gold-gradient" data-i18n="contact-title-2">Global Legacy</span>
+                        </h2>
+                        <p class="text-lg text-k-gray font-light leading-relaxed max-w-md" data-i18n="contact-desc">
+                            Request a private consultation with our global strategy team. Confidentiality is our cornerstone.
+                        </p>
+                    </div>
+                    
+                    <!-- 社交快捷入口 -->
+                    <div class="grid grid-cols-3 gap-4 max-w-md mt-12 lg:mt-0">
+                        <a href="https://wa.me/yournumber" target="_blank" class="icon-btn flex flex-col items-center gap-4 p-6 rounded-[30px]">
+                            <svg class="w-6 h-6 text-green-500/70" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M15.75 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"/></svg>
+                            <span class="text-[7px] font-bold uppercase tracking-[0.2em] opacity-30">WhatsApp</span>
+                        </a>
+                        <a href="https://t.me/yourid" target="_blank" class="icon-btn flex flex-col items-center gap-4 p-6 rounded-[30px]">
+                            <svg class="w-6 h-6 text-blue-500/70" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
+                            <span class="text-[7px] font-bold uppercase tracking-[0.2em] opacity-30">Telegram</span>
+                        </a>
+                        <button onclick="copyWechat('KPartners_Desk')" class="icon-btn flex flex-col items-center gap-4 p-6 rounded-[30px]">
+                            <svg class="w-6 h-6 text-emerald-500/70" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.01z"/></svg>
+                            <span class="text-[7px] font-bold uppercase tracking-[0.2em] opacity-30">WeChat ID</span>
+                        </button>
+                    </div>
+
+                    <!-- 底部联络矩阵 -->
+                    <div class="grid grid-cols-2 gap-8 pt-8 border-t border-gray-200 mt-12 lg:mt-0">
+                        <div><h4 class="text-[9px] font-bold uppercase tracking-widest opacity-40 mb-1" data-i18n="loc-london">London</h4><p class="text-xs font-semibold">Mayfair, W1K</p></div>
+                        <div><h4 class="text-[9px] font-bold uppercase tracking-widest opacity-40 mb-1" data-i18n="loc-dubai">Dubai</h4><p class="text-xs font-semibold">DIFC, Level 15</p></div>
+                        <div class="col-span-2">
+                            <h4 class="text-[9px] font-bold uppercase tracking-widest opacity-40 mb-1" data-i18n="form-email-label">Intelligence</h4>
+                            <a href="mailto:intelligence@kpartners.com" class="text-lg font-[800] text-black hover:text-k-gold transition-colors tracking-tighter">intelligence@kpartners.com</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：深邃的表单卡片 -->
+                <div class="bg-white rounded-[52px] p-10 md:p-14 shadow-[0_30px_90px_rgba(0,0,0,0.02)] border border-gray-50/80">
+                    <form id="contactForm" onsubmit="handleForm(event)" class="space-y-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-3">
+                                <label class="text-[9px] font-bold uppercase tracking-widest ml-1 opacity-40" data-i18n="form-name">Name</label>
+                                <input type="text" required class="w-full rounded-2xl px-5 py-5 outline-none" placeholder="Full Name">
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-[9px] font-bold uppercase tracking-widest ml-1 opacity-40" data-i18n="form-email">Email</label>
+                                <input type="email" required class="w-full rounded-2xl px-5 py-5 outline-none" placeholder="email@address.com">
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-[9px] font-bold uppercase tracking-widest ml-1 opacity-40" data-i18n="form-message">Consultation Details</label>
+                            <textarea required rows="5" class="w-full rounded-2xl px-5 py-5 outline-none resize-none" placeholder="Describe your objectives..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-black text-white py-6 rounded-2xl font-[800] hover:shadow-2xl transition-all flex items-center justify-center gap-4 active:scale-[0.98] text-[10px] tracking-[0.2em] uppercase">
+                            <span data-i18n="btn-submit">Submit Inquiry</span> <span>→</span>
+                        </button>
+                    </form>
+                    <div id="formSuccess" class="hidden text-center py-24">
+                        <div class="text-6xl mb-6 text-k-gold">✓</div>
+                        <h4 class="text-2xl font-[900] tracking-tight" data-i18n="form-success">Request Received</h4>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Side Drawer -->
+    <div id="portfolio-overlay" onclick="closeDrawer()" class="fixed inset-0 bg-black/10 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity z-[60]"></div>
+    <div id="portfolio-drawer" class="fixed top-0 right-0 w-full md:w-[600px] h-full bg-white z-[70] translate-x-full shadow-2xl p-16 overflow-y-auto">
+        <div class="flex justify-between items-center mb-20">
+            <h2 id="drawer-title" class="text-4xl font-[900] tracking-tighter">Archive</h2>
+            <button onclick="closeDrawer()" class="w-10 h-10 flex items-center justify-center rounded-full bg-k-light text-xl transition-transform hover:rotate-90">×</button>
+        </div>
+        <div id="drawer-content" class="space-y-14 pb-20"></div>
     </div>
 
-    <footer class="py-24 text-center border-t border-gray-50">
-        <div class="max-w-2xl mx-auto px-6">
-            <h2 class="text-4xl font-bold tracking-tighter mb-6">K partners</h2>
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.4em]">Global Sovereignty Archive</p>
-        </div>
+    <footer class="py-24 text-center opacity-30 text-[9px] font-bold uppercase tracking-[0.6em]">
+        K Partners Global Archive © 2025
     </footer>
 
     <script>
-        // Comprehensive Portfolio Data
-        const portfolioData = {
-            citizenship: {
-                title: "Citizenship",
-                categories: [
-                    { name: "Direct Investment", items: ["Malta (MEIN)", "Austria (Sec. 10)", "Turkey", "Albania", "Georgia"] },
-                    { name: "Caribbean Series", items: ["St. Kitts & Nevis", "Grenada", "Dominica", "St. Lucia", "Antigua & Barbuda"] },
-                    { name: "Pacific & Global", items: ["Vanuatu", "Nauru", "Sao Tome"] },
-                    { name: "Bloodline / Ancestry", items: ["Italy (Jure Sanguinis)", "Ireland (Foreign Births)"] }
-                ]
+        const translations = {
+            en: {
+                "nav-citizenship": "Citizenship", "nav-residency": "Residency", "nav-usdesk": "US Desk", "nav-contact": "Contact",
+                "hero-title-1": "Freedom is", "hero-title-2": "The Ultimate Asset", "hero-desc": "The world's most comprehensive portfolio of citizenship and residency architecture.",
+                "hero-cta-1": "Explore Portfolio >", "hero-cta-2": "Private Consultation",
+                "card-malta-tag": "The Sovereign Standard", "card-malta-desc": "The world’s most prestigious citizenship program. Unmatched security and a legacy for generations.",
+                "card-malta-footer": "European Union • 12 Months", "card-albania-tag": "Balkan Frontier", "card-albania-desc": "Strategic European gateway with an emerging citizenship pathway.",
+                "card-georgia-tag": "Efficiency Leader", "card-georgia-desc": "A pro-business jurisdiction with 30-day processing time.",
+                "btn-details": "DETAILS", "btn-brief": "Intelligence Brief", "chart-tag": "Data Architecture", "chart-title": "Mobility Index 2025",
+                "chart-stat-1": "Portfolio Value", "chart-stat-2": "Access Points",
+                "contact-title-1": "Curate Your", "contact-title-2": "Global Legacy", "contact-desc": "Request a private consultation with our global strategy team. Confidentiality is our cornerstone.",
+                "form-name": "Full Name", "form-email": "Email Address", "form-message": "Consultation Details", "form-email-label": "Intelligence", "btn-submit": "Submit Inquiry", "form-success": "Request Received",
+                "loc-london": "London", "loc-dubai": "Dubai", "toast-copy": "Identifier Copied", "lang-name": "English"
             },
-            residency: {
-                title: "Residency",
-                categories: [
-                    { name: "European Golden Visas", items: ["Portugal", "Greece", "Spain", "Italy", "Cyprus", "Hungary", "Bulgaria", "Latvia", "Estonia", "France"] },
-                    { name: "Global Hubs", items: ["Singapore (GIP)", "Hong Kong (Top Talent)", "UAE Golden Visa", "Japan", "South Korea"] },
-                    { name: "Anglosphere", items: ["Canada (SUV/PNP/Quebec)", "Australia (188/GTI)", "New Zealand PR"] },
-                    { name: "Fiscal Havens", items: ["The Bahamas", "Switzerland"] }
-                ]
+            zh: {
+                "nav-citizenship": "主权公民", "nav-residency": "全球居留", "nav-usdesk": "美国事务", "nav-contact": "私人洽谈",
+                "hero-title-1": "自由是", "hero-title-2": "资产主权的终极演进", "hero-desc": "全球最高标准的身份与版图策展，为您重塑身份边界与财富流动性。",
+                "hero-cta-1": "查阅馆藏资源 >", "hero-cta-2": "预约私人策展",
+                "card-malta-tag": "主权巅峰之作", "card-malta-desc": "全球最为尊荣的公民计划。无与伦比的安全防卫，为您奠定跨代传承的财富基石。",
+                "card-malta-footer": "欧盟成员国 • 12个月获批", "card-albania-tag": "巴尔干门户", "card-albania-desc": "新兴的欧洲战略中心，提供极具吸引力的公民路径。",
+                "card-georgia-tag": "效率领跑者", "card-georgia-desc": "亲商避税港，提供独特的领土税收优惠。",
+                "btn-details": "查阅详情", "btn-brief": "战略简报", "chart-tag": "数据架构", "chart-title": "2025 通行指数",
+                "chart-stat-1": "资产组合价值", "chart-stat-2": "准入国家数量",
+                "contact-title-1": "策展您的", "contact-title-2": "全球版图主权", "contact-desc": "联络全球策略办公室，开启极度保密的私人咨询。",
+                "form-name": "贵姓全名", "form-email": "电子邮箱地址", "form-message": "咨询详情描述", "form-email-label": "官方邮箱", "btn-submit": "提交意向申请", "form-success": "申请已收到",
+                "loc-london": "伦敦", "loc-dubai": "迪拜", "toast-copy": "私人识别码已复制", "lang-name": "简体中文"
             },
-            us: {
-                title: "US Desk",
-                categories: [
-                    { name: "Federal Pathways", items: ["EB-5 Immigrant Investor", "E-2 Treaty Investor"] },
-                    { name: "Special Access", items: ["Trump Golden Card", "Trump Platinum Access"] }
-                ]
+            ja: {
+                "nav-citizenship": "市民権", "nav-residency": "居住権", "nav-usdesk": "US デスク", "nav-contact": "連絡先",
+                "hero-title-1": "自由は", "hero-title-2": "究極の資産である", "hero-desc": "世界で最も洗练された市民権ポートフォリオ。あなたの主権を再定義します。",
+                "hero-cta-1": "アーカイブを見る >", "hero-cta-2": "プライベート相談",
+                "card-malta-tag": "最高水準の主権", "card-malta-desc": "世界で最も権威ある市民権。世代を超えるレガシー。",
+                "btn-details": "詳細を調査", "btn-brief": "レポート",
+                "contact-title-1": "あなたの", "contact-title-2": "主権を設計する", "contact-desc": "戦略チームによる極秘のコンサルティングを依頼する。",
+                "form-name": "お名前", "form-email": "メールアドレス", "form-message": "ご相談内容の詳細", "form-email-label": "メールアドレス", "btn-submit": "送信する", "form-success": "受領しました",
+                "loc-london": "ロンドン", "loc-dubai": "ドバイ", "toast-copy": "コピー完了", "lang-name": "日本語"
+            },
+            ko: {
+                "nav-citizenship": "시민권", "nav-residency": "거주권", "nav-usdesk": "미국 데스크", "nav-contact": "문의",
+                "hero-title-1": "자유는", "hero-title-2": "궁극의 자산입니다", "hero-desc": "세계에서 가장 포괄적인 거주권 건축 포트폴리오。 신분을 넘어선 가치를 설계합니다。",
+                "hero-cta-1": "아카이브 탐색 >", "hero-cta-2": "프라이빗 상담",
+                "card-malta-tag": "주권의 표준", "card-malta-desc": "세계 최고 권위의 시민권 프로그램。 타협하지 않는 보안과 세대를 잇는 가치。",
+                "btn-details": "상세 조사", "btn-brief": "상세 보고",
+                "contact-title-1": "글로벌 주권을", "contact-title-2": "설계하십시오", "contact-desc": "글로벌 전략 팀과 함께 비밀이 보장되는 프라이빗 상담을 시작하십시오。",
+                "form-name": "이름", "form-email": "이메일", "form-message": "상담 상세", "form-email-label": "이메일", "btn-submit": "문의 제출", "form-success": "접수되었습니다",
+                "loc-london": "런던", "loc-dubai": "두바이", "toast-copy": "복사되었습니다", "lang-name": "한국어"
+            },
+            id: {
+                "nav-citizenship": "Kedaulatan", "nav-residency": "Izin Tinggal", "nav-usdesk": "US Desk", "nav-contact": "Kontak",
+                "hero-title-1": "Kebebasan adalah", "hero-title-2": "Aset Kedaulatan Tertinggi", "hero-desc": "Arsitektur kewarganegaraan paling komprehensif untuk masa depan kedaulatan Anda。",
+                "hero-cta-1": "Jelajahi Arsip >", "hero-cta-2": "Konsultasi Privat",
+                "card-malta-tag": "Standar Kedaulatan", "card-malta-desc": "Program kewarganegaraan paling bergengsi di dunia. Keamanan mutlak dan warisan generasi。",
+                "btn-details": "DETAIL", "btn-brief": "Laporan",
+                "contact-title-1": "Rancang", "contact-title-2": "Kedaulatan Global", "contact-desc": "Minta konsultasi pribadi dengan tim strategi global kami. Kerahasiaan adalah fondasi kami。",
+                "form-name": "Nama Lengkap", "form-email": "Alamat Surel", "form-message": "Detail Konsultasi", "form-email-label": "Surel", "btn-submit": "Kirim Pertanyaan", "form-success": "Terima Kasih",
+                "loc-london": "London", "loc-dubai": "Dubai", "toast-copy": "Disalin", "lang-name": "Indonesia"
             }
         };
 
-        const apiKey = ""; // System injected
+        const portfolioData = {
+            citizenship: { title: "Citizenship", categories: [{ name: "Direct", items: ["Malta (MEIN)", "Austria", "Turkey", "Albania", "Georgia"] }] },
+            residency: { title: "Residency", categories: [{ name: "Golden Visas", items: ["Portugal", "Greece", "Spain", "Italy", "UAE"] }] },
+            usdesk: { title: "US Desk", categories: [{ name: "Federal", items: ["EB-5 Investor", "E-2 Treaty", "EB-1 Talent"] }] }
+        };
+
+        window.onload = function() {
+            const ctx = document.getElementById('mobilityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+                    datasets: [{
+                        data: [62, 65, 74, 86, 94, 98],
+                        borderColor: '#af8f55', borderWidth: 3, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(175, 143, 85, 0.05)'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { weight: '800' }, color: '#86868b' } } }
+                }
+            });
+        };
+
+        function toggleLangDropdown() { document.getElementById('lang-dropdown').classList.toggle('active'); }
+        function closeLangDropdown() { document.getElementById('lang-dropdown').classList.remove('active'); }
+
+        function switchLanguage(lang) {
+            if (!translations[lang]) return;
+            document.documentElement.lang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) el.innerText = translations[lang][key];
+            });
+            document.getElementById('current-lang-text').innerText = translations[lang]["lang-name"];
+            closeLangDropdown();
+        }
 
         function toggleDrawer(type) {
             const data = portfolioData[type];
             document.getElementById('drawer-title').innerText = data.title;
             let html = "";
             data.categories.forEach(cat => {
-                html += `<div class="fade-in">
-                    <h4 class="text-[10px] font-bold text-k-gold uppercase tracking-[0.3em] mb-6">${cat.name}</h4>
-                    <div class="grid grid-cols-1 gap-2">
-                        ${cat.items.map(item => `
-                            <div class="p-5 bg-k-light rounded-2xl text-[14px] font-medium hover:bg-black hover:text-white transition-all cursor-pointer flex justify-between items-center group" onclick="toggleAI(); aiInput.value='Tell me about ${item}'; askAI();">
-                                ${item}
-                                <span class="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>`;
+                html += `<div class="fade-in"><h4 class="text-[10px] font-bold text-k-gold uppercase tracking-[0.3em] mb-6">${cat.name}</h4><div class="grid grid-cols-1 gap-3">${cat.items.map(item => `<div class="p-6 bg-k-light rounded-2xl text-[14px] font-[800] hover:bg-black hover:text-white transition-all cursor-pointer flex justify-between items-center group">${item} <span>→</span></div>`).join('')}</div></div>`;
             });
             document.getElementById('drawer-content').innerHTML = html;
             document.getElementById('portfolio-drawer').classList.add('drawer-open');
@@ -247,50 +448,15 @@
             document.getElementById('portfolio-overlay').classList.remove('opacity-100', 'pointer-events-auto');
         }
 
-        // AI Logic
-        async function askAI() {
-            const query = document.getElementById('ai-input').value.trim();
-            if (!query) return;
-
-            const chat = document.getElementById('chat-history');
-            const userBox = document.createElement('div');
-            userBox.className = "bg-black text-white p-7 rounded-[30px] rounded-tr-none shadow-sm ml-auto max-w-[85%] text-[15px] leading-relaxed";
-            userBox.innerText = query;
-            chat.appendChild(userBox);
-            document.getElementById('ai-input').value = "";
-            document.getElementById('ai-loading').classList.remove('hidden');
-
-            const sysPrompt = "You are the K Partners Elite Analyst. Use professional, sophisticated English. Provide strategic insights on: Citizenship (Malta, Austria, Albania, Georgia, Turkey, Vanuatu, Caribbean 5, Ancestry Italy/Ireland), US (EB-5, Trump Golden Card, E-2), and Residency (Singapore, HK, UAE, Europe Golden Visas, Canada/Australia). Focus on sovereignty and asset protection.";
-            
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: query }] }], systemInstruction: { parts: [{ text: sysPrompt }] } })
-                });
-                const result = await response.json();
-                const aiBox = document.createElement('div');
-                aiBox.className = "bg-white p-7 rounded-[30px] rounded-tl-none shadow-sm max-w-[85%] text-[15px] leading-relaxed fade-in";
-                aiBox.innerText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                chat.appendChild(aiBox);
-            } catch (e) {}
-            document.getElementById('ai-loading').classList.add('hidden');
-            chat.parentElement.scrollTop = chat.parentElement.scrollHeight;
+        function copyWechat(id) {
+            const el = document.createElement('textarea'); el.value = id; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+            const toast = document.getElementById('toast'); toast.innerText = (translations[document.documentElement.lang]?.["toast-copy"] || "Copied") + ": " + id;
+            toast.style.opacity = '1'; setTimeout(() => toast.style.opacity = '0', 3000);
         }
 
-        function toggleAI() {
-            const ai = document.getElementById('ai-assistant');
-            ai.classList.toggle('hidden');
-            if(!ai.classList.contains('hidden')) document.getElementById('ai-input').focus();
-        }
-
-        function generateBrief(name) {
-            toggleAI();
-            document.getElementById('ai-input').value = `Strategic brief for ${name}.`;
-            askAI();
-        }
-
-        document.getElementById('ai-input').addEventListener('keypress', (e) => { if(e.key === 'Enter') askAI(); });
+        function handleForm(e) { e.preventDefault(); document.getElementById('contactForm').classList.add('hidden'); document.getElementById('formSuccess').classList.remove('hidden'); }
+        function toggleAI() { alert("Elite Strategy AI Initializing..."); }
+        function generateBrief(name) { alert(`Generating Intelligence Brief for ${name}...`); }
     </script>
 </body>
 </html>
