@@ -90,7 +90,7 @@
         }
         .lang-option.selected::before {
             content: ""; position: absolute; left: 10px; top: 50%;
-            transform: translateY(-50%); width: 3px; height: 3px;
+            transform: translateY(-50%); width: 4px; height: 4px;
             background-color: #af8f55; border-radius: 50%;
         }
 
@@ -145,7 +145,7 @@
                 <a href="#contact" data-i18n="nav-contact">Contact</a>
             </div>
 
-            <!-- 右侧：语言切换 (已实现极简右对齐) -->
+            <!-- 右侧：语言切换 (已实现极简右对齐，删除了手机端的汉堡菜单) -->
             <div class="flex items-center">
                 <div class="relative">
                     <button onclick="event.stopPropagation(); toggleLangDropdown()" 
@@ -154,7 +154,6 @@
                         <span id="current-lang-text" class="text-[9px] font-[900] uppercase tracking-[0.1em]">EN</span>
                         <svg class="w-2.5 h-2.5 opacity-20" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                     </button>
-                    <!-- 下拉列表 -->
                     <div id="lang-dropdown" class="absolute right-0 mt-3 w-40 rounded-[20px] overflow-hidden py-2 px-2 border border-black/[0.03]">
                         <button onclick="switchLanguage('en')" id="lang-en" class="lang-option selected w-full text-left px-7 py-2 text-[10px] font-bold hover:bg-black/[0.04] rounded-xl uppercase">English</button>
                         <button onclick="switchLanguage('zh')" id="lang-zh" class="lang-option w-full text-left px-7 py-2 text-[10px] font-bold hover:bg-black/[0.04] rounded-xl">简体中文</button>
@@ -170,7 +169,7 @@
     <!-- Hero Section -->
     <section class="h-screen flex flex-col justify-center items-center text-center px-8">
         <div class="max-w-6xl mx-auto">
-            <h1 class="hero-heading text-[42px] sm:text-[60px] md:text-[84px] font-[900] mb-8 fade-in leading-[1.05]">
+            <h1 class="hero-heading text-[42px] sm:text-[60px] md:text-[86px] font-[900] mb-8 fade-in leading-[1.05]">
                 <span class="block text-black" data-i18n="hero-title-1">Freedom is</span>
                 <span class="block gold-gradient" data-i18n="hero-title-2">The Ultimate Asset</span>
             </h1>
@@ -184,7 +183,7 @@
         </div>
     </section>
 
-    <!-- Featured Spotlight: 已移除 DETAILS 按钮 -->
+    <!-- Featured Spotlight: 4 个项目矩阵，按钮已全部移除 -->
     <section class="pb-24 px-6 md:px-8">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
             <!-- 1. Malta -->
@@ -196,7 +195,6 @@
                 </div>
                 <div class="z-10 flex justify-between items-end">
                     <div class="text-[9px] font-bold tracking-[0.3em] opacity-40 uppercase">EU • 12 Months</div>
-                    <!-- 按钮已移除 -->
                 </div>
                 <div class="absolute -right-40 -bottom-40 w-[600px] h-[600px] bg-k-gold/10 blur-[150px] rounded-full"></div>
             </div>
@@ -210,7 +208,6 @@
                 </div>
                 <div class="z-10 flex justify-between items-end">
                     <div class="text-[9px] font-bold tracking-[0.3em] opacity-40 uppercase">Schengen • Path</div>
-                    <!-- 按钮已移除 -->
                 </div>
             </div>
 
@@ -221,7 +218,6 @@
                     <h3 class="hero-heading text-2xl md:text-3xl font-[900] mt-4">Albania</h3>
                     <p class="text-k-gray mt-6 text-sm font-light leading-relaxed" data-i18n="card-albania-desc">Strategic European gateway with an emerging citizenship pathway.</p>
                 </div>
-                <!-- 按钮已移除 -->
             </div>
 
             <!-- 4. Georgia -->
@@ -231,7 +227,6 @@
                     <h3 class="hero-heading text-2xl md:text-3xl font-[900] mt-4">Georgia</h3>
                     <p class="text-k-gray mt-6 text-sm font-light leading-relaxed" data-i18n="card-georgia-desc">A pro-business jurisdiction with 30-day processing time.</p>
                 </div>
-                <!-- 按钮已移除 -->
             </div>
         </div>
     </section>
@@ -263,7 +258,7 @@
         </div>
     </section>
 
-    <!-- Contact Section: 严谨对称 5:5 布局 -->
+    <!-- Contact Section -->
     <section id="contact" class="py-40 bg-k-light/40 border-t border-black/[0.03]">
         <div class="max-w-7xl mx-auto px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-stretch">
@@ -280,8 +275,7 @@
                         </p>
                     </div>
                     
-                    <!-- 社交 -->
-                    <div class="grid grid-cols-3 gap-5 max-w-md">
+                    <div class="grid grid-cols-3 gap-5 max-w-sm mt-12 mb-12">
                         <a href="#" class="icon-btn flex flex-col items-center gap-4 p-6 rounded-[30px]">
                             <svg class="w-6 h-6 text-green-500/70" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M15.75 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"/></svg>
                             <span class="text-[7px] font-[900] uppercase tracking-[0.2em] opacity-30">WhatsApp</span>
@@ -296,7 +290,7 @@
                         </button>
                     </div>
 
-                    <!-- 地址矩阵 -->
+                    <!-- 办公室与邮箱 -->
                     <div class="grid grid-cols-2 gap-8 pt-12 border-t border-black/[0.05]">
                         <div><h4 class="text-[9px] font-bold uppercase tracking-widest opacity-40 mb-1" data-i18n="loc-london">London</h4><p class="text-xs font-semibold">Mayfair, W1K</p></div>
                         <div><h4 class="text-[9px] font-bold uppercase tracking-widest opacity-40 mb-1" data-i18n="loc-dubai">Dubai</h4><p class="text-xs font-semibold">DIFC, Level 15</p></div>
@@ -365,7 +359,7 @@
             },
             zh: {
                 "nav-portfolio": "策展组合", "nav-contact": "私人洽谈",
-                "hero-title-1": "自由是", "hero-title-2": "资产主权的终极演进", "hero-desc": "全球最高标准的身份与版图策展，为您重塑身份边界与财富流动性。",
+                "hero-title-1": "自由：", "hero-title-2": "资产主权的终极演进", "hero-desc": "全球最高标准的身份与版图策展，为您重塑身份边界与财富流动性。",
                 "hero-cta-1": "查阅馆藏资源 >", "hero-cta-2": "预约私人策展",
                 "card-malta-tag": "主权巅峰之作", "card-malta-desc": "全球最为尊荣的公民计划。无与伦比的安全防卫。",
                 "card-portugal-tag": "居留权门户", "card-portugal-desc": "欧洲最受欢迎的黄金签证。通往欧盟公民身份的清晰路径。",
