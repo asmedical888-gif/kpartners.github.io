@@ -38,7 +38,7 @@
         }
         
         .hero-heading {
-            letter-spacing: -0.045em;
+            letter-spacing: -0.04em;
             line-height: 1.05;
             font-feature-settings: 'cv11', 'ss01', 'ss02', 'tnum';
         }
@@ -66,13 +66,14 @@
             box-shadow: 0 40px 80px rgba(0,0,0,0.04);
         }
 
+        /* 极致协调的语言下拉框 */
         #lang-dropdown { 
             display: none; 
-            animation: menuIn 0.3s cubic-bezier(0.15, 0, 0.15, 1);
+            animation: menuIn 0.3s ease-out;
             backdrop-filter: blur(50px);
             background-color: rgba(255, 255, 255, 0.85);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.08);
-            border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.02);
             transform-origin: top right;
             z-index: 100;
         }
@@ -89,7 +90,7 @@
         }
         .lang-option.selected::before {
             content: ""; position: absolute; left: 10px; top: 50%;
-            transform: translateY(-50%); width: 3.5px; height: 3.5px;
+            transform: translateY(-50%); width: 3px; height: 3px;
             background-color: #af8f55; border-radius: 50%;
         }
 
@@ -108,16 +109,21 @@
             background: #ffffff;
             border: 1px solid rgba(0,0,0,0.02);
         }
-        .icon-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.04); }
+        .icon-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.04); }
 
         #portfolio-drawer { transition: transform 0.6s cubic-bezier(0.15, 0, 0.15, 1); }
         .drawer-open { transform: translateX(0) !important; }
 
         input, textarea {
-            font-size: 15px !important;
+            font-size: 16px !important;
             letter-spacing: -0.01em;
             background: #fbfbfd !important;
             border: 1px solid transparent !important;
+            transition: all 0.3s ease;
+        }
+        input:focus, textarea:focus {
+            background: #ffffff !important;
+            border-color: rgba(0,0,0,0.1) !important;
         }
     </style>
 </head>
@@ -138,12 +144,12 @@
             <div class="flex items-center space-x-3">
                 <div class="relative">
                     <button onclick="event.stopPropagation(); toggleLangDropdown()" 
-                            class="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-black/[0.04] hover:bg-black/[0.06] transition-all group">
+                            class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-black/[0.04] hover:bg-black/[0.06] transition-all group">
                         <svg class="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9s2.015-9 4.5-9m0 18c-5.965 0-10.845-4.848-10.998-10.793m10.998-7.207c5.965 0 10.845 4.848 10.998 10.793M12 3a9 9 0 00-8.716 2.253M12 3a9 9 0 018.716 2.253" /></svg>
                         <span id="current-lang-text" class="text-[9px] font-[900] uppercase tracking-[0.1em]">EN</span>
                         <svg class="w-2.5 h-2.5 opacity-20" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                     </button>
-                    <div id="lang-dropdown" class="absolute right-0 mt-3 w-44 rounded-[20px] overflow-hidden py-2 px-2 border border-black/[0.03]">
+                    <div id="lang-dropdown" class="absolute right-0 mt-3 w-40 rounded-[20px] overflow-hidden py-2 px-2">
                         <button onclick="switchLanguage('en')" id="lang-en" class="lang-option selected w-full text-left px-7 py-2 text-[10px] font-bold hover:bg-black/[0.04] rounded-xl uppercase">English</button>
                         <button onclick="switchLanguage('zh')" id="lang-zh" class="lang-option w-full text-left px-7 py-2 text-[10px] font-bold hover:bg-black/[0.04] rounded-xl">简体中文</button>
                         <button onclick="switchLanguage('ja')" id="lang-ja" class="lang-option w-full text-left px-7 py-2 text-[10px] font-bold hover:bg-black/[0.04] rounded-xl">日本語</button>
@@ -157,7 +163,7 @@
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
+    <!-- Mobile Menu Overlay -->
     <div id="mobile-menu" class="fixed inset-0 z-[60] bg-white hidden flex-col justify-center items-center space-y-8 text-center px-10">
         <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-3xl opacity-20">×</button>
         <button onclick="toggleMobileMenu(); toggleDrawer()" class="text-3xl font-[900] tracking-tighter" data-i18n="nav-portfolio">Portfolio</button>
@@ -167,7 +173,7 @@
     <!-- Hero Section -->
     <section class="h-screen flex flex-col justify-center items-center text-center px-8">
         <div class="max-w-6xl mx-auto">
-            <h1 class="hero-heading text-[44px] sm:text-[62px] md:text-[88px] font-[900] mb-8 fade-in leading-[1.05]">
+            <h1 class="hero-heading text-[44px] sm:text-[62px] md:text-[86px] font-[900] mb-8 fade-in leading-[1.05]">
                 <span class="block text-black" data-i18n="hero-title-1">Freedom is</span>
                 <span class="block gold-gradient" data-i18n="hero-title-2">The Ultimate Asset</span>
             </h1>
@@ -183,9 +189,9 @@
 
     <!-- Featured Spotlight: 恢复 4 个项目 -->
     <section class="pb-24 px-6 md:px-8">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
             <!-- 1. Malta (Large) -->
-            <div class="apple-card p-10 flex flex-col justify-between h-[520px] bg-[#1d1d1f] text-white overflow-hidden relative">
+            <div class="apple-card p-10 flex flex-col justify-between h-[540px] bg-[#1d1d1f] text-white overflow-hidden relative">
                 <div class="z-10">
                     <span class="text-[9px] font-bold text-k-gold uppercase tracking-[0.4em]" data-i18n="card-malta-tag">The Sovereign Standard</span>
                     <h3 class="hero-heading text-3xl md:text-5xl font-[900] mt-6 mb-6">Malta MEIN</h3>
@@ -199,7 +205,7 @@
             </div>
 
             <!-- 2. Portugal (Large) -->
-            <div class="apple-card p-10 flex flex-col justify-between h-[520px] bg-white border border-black/[0.03]">
+            <div class="apple-card p-10 flex flex-col justify-between h-[540px] bg-white border border-black/[0.03]">
                 <div class="z-10">
                     <span class="text-[9px] font-bold text-blue-500 uppercase tracking-[0.4em]" data-i18n="card-portugal-tag">Residency Gateway</span>
                     <h3 class="hero-heading text-3xl md:text-5xl font-[900] mt-6 mb-6 text-black">Portugal GV</h3>
@@ -260,15 +266,16 @@
         </div>
     </section>
 
-    <!-- Contact Section: 严谨对称布局 5:5，垂直居中 -->
+    <!-- Contact Section: 严谨对称 50/50 物理高度锁定布局 -->
     <section id="contact" class="py-40 bg-k-light/40 border-t border-black/[0.03]">
         <div class="max-w-7xl mx-auto px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:items-center">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-stretch">
                 
-                <!-- 左侧：视觉矩阵 (高度平衡右侧) -->
-                <div class="flex flex-col justify-center space-y-10 py-6 text-left h-full">
-                    <div class="space-y-6">
-                        <h2 class="hero-heading text-3xl md:text-[52px] font-[900] leading-[1.1]">
+                <!-- 左侧：视觉对齐矩阵 (垂直分布以对齐右侧卡片) -->
+                <div class="flex flex-col justify-between py-6 text-left h-full">
+                    <div class="space-y-8">
+                        <!-- 缩小后的标题字号，增强协调感 -->
+                        <h2 class="hero-heading text-3xl md:text-[50px] font-[900] mb-4 leading-[1.1]">
                             <span class="block text-black" data-i18n="contact-title-1">Curate Your</span>
                             <span class="block gold-gradient" data-i18n="contact-title-2">Global Legacy</span>
                         </h2>
@@ -277,21 +284,23 @@
                         </p>
                     </div>
                     
-                    <div class="grid grid-cols-3 gap-4 max-w-sm mt-8">
+                    <!-- 社交快捷 -->
+                    <div class="grid grid-cols-3 gap-4 max-w-sm mt-12 mb-12">
                         <a href="#" class="icon-btn flex flex-col items-center gap-4 p-6 rounded-[30px]">
                             <svg class="w-6 h-6 text-green-500/70" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M15.75 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"/></svg>
-                            <span class="text-[7px] font-bold uppercase tracking-[0.2em] opacity-30">WhatsApp</span>
+                            <span class="text-[7px] font-[900] uppercase tracking-[0.2em] opacity-30">WhatsApp</span>
                         </a>
                         <a href="#" class="icon-btn flex flex-col items-center gap-4 p-6 rounded-[30px]">
                             <svg class="w-6 h-6 text-blue-500/70" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
-                            <span class="text-[7px] font-bold uppercase tracking-[0.2em] opacity-30">Telegram</span>
+                            <span class="text-[7px] font-[900] uppercase tracking-[0.2em] opacity-30">Telegram</span>
                         </a>
                         <button onclick="copyWechat('KPartners_Desk')" class="icon-btn flex flex-col items-center gap-4 p-6 rounded-[30px]">
                             <svg class="w-6 h-6 text-emerald-500/70" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.01z"/></svg>
-                            <span class="text-[7px] font-bold uppercase tracking-[0.2em] opacity-30">WeChat ID</span>
+                            <span class="text-[7px] font-[900] uppercase tracking-[0.2em] opacity-30">WeChat ID</span>
                         </button>
                     </div>
 
+                    <!-- 办公室与邮箱 -->
                     <div class="grid grid-cols-2 gap-8 pt-10 border-t border-black/[0.05]">
                         <div><h4 class="text-[9px] font-bold uppercase tracking-widest opacity-40 mb-1" data-i18n="loc-london">London</h4><p class="text-xs font-semibold">Mayfair, W1K</p></div>
                         <div><h4 class="text-[9px] font-bold uppercase tracking-widest opacity-40 mb-1" data-i18n="loc-dubai">Dubai</h4><p class="text-xs font-semibold">DIFC, Level 15</p></div>
@@ -302,7 +311,7 @@
                     </div>
                 </div>
 
-                <!-- 右侧：平衡的表单卡片 -->
+                <!-- 右侧：平衡的表单卡片 (物理高度中心点) -->
                 <div class="bg-white rounded-[52px] p-10 md:p-14 shadow-[0_30px_90px_rgba(0,0,0,0.02)] border border-black/[0.02]">
                     <form id="contactForm" onsubmit="handleForm(event)" class="space-y-12">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -355,8 +364,6 @@
                 "hero-cta-1": "Explore Portfolio >", "hero-cta-2": "Private Consultation",
                 "card-malta-tag": "The Sovereign Standard", "card-malta-desc": "The world’s most prestigious citizenship program. Unmatched security and a legacy for generations.",
                 "card-portugal-tag": "Residency Gateway", "card-portugal-desc": "The most sought-after Golden Visa in Europe. Path to EU citizenship.",
-                "card-albania-tag": "Balkan Frontier", "card-albania-desc": "Strategic European gateway with an emerging citizenship pathway.",
-                "card-georgia-tag": "Efficiency Leader", "card-georgia-desc": "A pro-business jurisdiction with 30-day processing time.",
                 "loc-london": "London", "loc-dubai": "Dubai", "form-email-label": "Intelligence",
                 "form-name": "Full Name", "form-email": "Email Address", "form-message": "Consultation Details", "btn-submit": "Submit Inquiry", "form-success": "Request Received", "lang-name": "EN"
             },
@@ -366,8 +373,6 @@
                 "hero-cta-1": "查阅馆藏资源 >", "hero-cta-2": "预约私人策展",
                 "card-malta-tag": "主权巅峰之作", "card-malta-desc": "全球最为尊荣的公民计划。无与伦比的安全防卫，为您奠定跨代传承的财富基石。",
                 "card-portugal-tag": "居留权门户", "card-portugal-desc": "欧洲最受欢迎的黄金签证。通往欧盟公民身份的清晰路径。",
-                "card-albania-tag": "巴尔干门户", "card-albania-desc": "新兴的欧洲战略中心，提供极具吸引力的公民路径。",
-                "card-georgia-tag": "效率领跑者", "card-georgia-desc": "亲商避税港，提供独特的领土税收优惠。",
                 "loc-london": "伦敦办公室", "loc-dubai": "迪拜办公室", "form-email-label": "官方邮箱",
                 "form-name": "贵姓全名", "form-email": "电子邮箱地址", "form-message": "咨询详情描述", "btn-submit": "提交意向申请", "form-success": "申请已收到", "lang-name": "中文"
             },
@@ -375,19 +380,19 @@
                 "nav-portfolio": "ポートフォリオ", "nav-contact": "連絡先",
                 "hero-title-1": "自由は", "hero-title-2": "究極の資産である", "hero-desc": "世界で最も洗练された市民権ポートフォリオ。あなたの主権を再定義します。",
                 "loc-london": "ロンドン", "loc-dubai": "ドバイ", "form-email-label": "メール",
-                "btn-submit": "送信する", "form-success": "受領しました", "lang-name": "日本語"
+                "form-name": "お名前", "form-email": "メールアドレス", "form-message": "詳細内容", "btn-submit": "送信する", "form-success": "受領しました", "lang-name": "日本語"
             },
             ko: {
                 "nav-portfolio": "포트폴리오", "nav-contact": "문의",
                 "hero-title-1": "자유는", "hero-title-2": "궁극의 자산입니다", "hero-desc": "세계에서 가장 포괄적인 거주권 건축 포트폴리오. 신분을 넘어선 가치를 설계합니다。",
                 "loc-london": "런던", "loc-dubai": "두바이", "form-email-label": "이메일",
-                "btn-submit": "문의 제출", "form-success": "접수되었습니다", "lang-name": "한국어"
+                "form-name": "이름", "form-email": "이메일", "form-message": "상담 상세", "btn-submit": "문의 제출", "form-success": "접수되었습니다", "lang-name": "한국어"
             },
             id: {
                 "nav-portfolio": "Portofolio", "nav-contact": "Kontak",
                 "hero-title-1": "Kebebasan adalah", "hero-title-2": "Aset Kedaulatan Tertinggi", "hero-desc": "Arsitektur kewarganegaraan paling komprehensif untuk masa depan kedaulatan Anda。",
                 "loc-london": "London", "loc-dubai": "Dubai", "form-email-label": "Surel",
-                "btn-submit": "Kirim", "form-success": "Disalin", "lang-name": "ID"
+                "form-name": "Nama Lengkap", "form-email": "Surel", "form-message": "Detail", "btn-submit": "Kirim", "form-success": "Disalin", "lang-name": "ID"
             }
         };
 
