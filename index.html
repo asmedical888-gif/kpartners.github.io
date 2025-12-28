@@ -69,7 +69,7 @@
         /* 极致协调的语言下拉框 */
         #lang-dropdown { 
             display: none; 
-            animation: menuIn 0.3s ease-out;
+            animation: menuIn 0.3s cubic-bezier(0.15, 0, 0.15, 1);
             backdrop-filter: blur(50px);
             background-color: rgba(255, 255, 255, 0.85);
             box-shadow: 0 20px 50px rgba(0,0,0,0.06);
@@ -80,7 +80,7 @@
         #lang-dropdown.active { display: block; }
 
         @keyframes menuIn {
-            from { opacity: 0; transform: scale(0.98) translateY(-5px); }
+            from { opacity: 0; transform: scale(0.98) translateY(-10px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
@@ -101,7 +101,7 @@
         
         .toast {
             position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.92); color: white; padding: 0.8rem 1.8rem;
+            background: rgba(0,0,0,0.95); color: white; padding: 0.9rem 2rem;
             border-radius: 99px; font-size: 0.75rem; font-weight: 700; z-index: 200;
             opacity: 0; pointer-events: none; transition: opacity 0.5s;
             backdrop-filter: blur(10px);
@@ -121,6 +121,11 @@
             letter-spacing: -0.01em;
             background: #fbfbfd !important;
             border: 1px solid transparent !important;
+            transition: all 0.3s ease;
+        }
+        input:focus, textarea:focus {
+            background: #ffffff !important;
+            border-color: rgba(0,0,0,0.1) !important;
         }
     </style>
 </head>
@@ -128,7 +133,7 @@
 
     <div id="toast" class="toast">Identifier Copied</div>
 
-    <!-- Navigation: 极简逻辑，EN 在手机端完全靠右 -->
+    <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 bg-white/75 backdrop-blur-3xl border-b border-black/[0.03]">
         <div class="max-w-7xl mx-auto px-6 md:px-8 h-14 flex items-center justify-between">
             <!-- 左侧：品牌 -->
@@ -140,17 +145,17 @@
                 <a href="#contact" data-i18n="nav-contact">Contact</a>
             </div>
 
-            <!-- 右侧：语言切换 (手机端唯一的右侧元素) -->
+            <!-- 右侧：语言切换 (已实现极简右对齐) -->
             <div class="flex items-center">
                 <div class="relative">
                     <button onclick="event.stopPropagation(); toggleLangDropdown()" 
-                            class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-black/[0.04] hover:bg-black/[0.06] transition-all group">
+                            class="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-black/[0.04] hover:bg-black/[0.06] transition-all group">
                         <svg class="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9s2.015-9 4.5-9m0 18c-5.965 0-10.845-4.848-10.998-10.793m10.998-7.207c5.965 0 10.845 4.848 10.998 10.793M12 3a9 9 0 00-8.716 2.253M12 3a9 9 0 018.716 2.253" /></svg>
                         <span id="current-lang-text" class="text-[9px] font-[900] uppercase tracking-[0.1em]">EN</span>
                         <svg class="w-2.5 h-2.5 opacity-20" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                     </button>
                     <!-- 下拉列表 -->
-                    <div id="lang-dropdown" class="absolute right-0 mt-3 w-40 rounded-[20px] overflow-hidden py-2 px-2">
+                    <div id="lang-dropdown" class="absolute right-0 mt-3 w-40 rounded-[20px] overflow-hidden py-2 px-2 border border-black/[0.03]">
                         <button onclick="switchLanguage('en')" id="lang-en" class="lang-option selected w-full text-left px-7 py-2 text-[10px] font-bold hover:bg-black/[0.04] rounded-xl uppercase">English</button>
                         <button onclick="switchLanguage('zh')" id="lang-zh" class="lang-option w-full text-left px-7 py-2 text-[10px] font-bold hover:bg-black/[0.04] rounded-xl">简体中文</button>
                         <button onclick="switchLanguage('ja')" id="lang-ja" class="lang-option w-full text-left px-7 py-2 text-[10px] font-bold hover:bg-black/[0.04] rounded-xl">日本語</button>
@@ -179,7 +184,7 @@
         </div>
     </section>
 
-    <!-- Featured Spotlight: 保持 4 个核心项目 -->
+    <!-- Featured Spotlight: 已移除 DETAILS 按钮 -->
     <section class="pb-24 px-6 md:px-8">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
             <!-- 1. Malta -->
@@ -191,7 +196,7 @@
                 </div>
                 <div class="z-10 flex justify-between items-end">
                     <div class="text-[9px] font-bold tracking-[0.3em] opacity-40 uppercase">EU • 12 Months</div>
-                    <button onclick="toggleDrawer()" class="px-8 py-3 bg-white text-black rounded-full font-bold text-[9px] tracking-widest active:scale-95">DETAILS</button>
+                    <!-- 按钮已移除 -->
                 </div>
                 <div class="absolute -right-40 -bottom-40 w-[600px] h-[600px] bg-k-gold/10 blur-[150px] rounded-full"></div>
             </div>
@@ -205,7 +210,7 @@
                 </div>
                 <div class="z-10 flex justify-between items-end">
                     <div class="text-[9px] font-bold tracking-[0.3em] opacity-40 uppercase">Schengen • Path</div>
-                    <button onclick="toggleDrawer()" class="px-8 py-3 bg-black text-white rounded-full font-bold text-[9px] tracking-widest active:scale-95">DETAILS</button>
+                    <!-- 按钮已移除 -->
                 </div>
             </div>
 
@@ -216,7 +221,7 @@
                     <h3 class="hero-heading text-2xl md:text-3xl font-[900] mt-4">Albania</h3>
                     <p class="text-k-gray mt-6 text-sm font-light leading-relaxed" data-i18n="card-albania-desc">Strategic European gateway with an emerging citizenship pathway.</p>
                 </div>
-                <button onclick="toggleDrawer()" class="w-fit text-blue-600 font-bold text-[10px] tracking-widest uppercase hover:underline">Intel Brief</button>
+                <!-- 按钮已移除 -->
             </div>
 
             <!-- 4. Georgia -->
@@ -226,14 +231,14 @@
                     <h3 class="hero-heading text-2xl md:text-3xl font-[900] mt-4">Georgia</h3>
                     <p class="text-k-gray mt-6 text-sm font-light leading-relaxed" data-i18n="card-georgia-desc">A pro-business jurisdiction with 30-day processing time.</p>
                 </div>
-                <button onclick="toggleDrawer()" class="w-fit text-blue-600 font-bold text-[10px] tracking-widest uppercase hover:underline">Intel Brief</button>
+                <!-- 按钮已移除 -->
             </div>
         </div>
     </section>
 
     <!-- Strategic Index -->
     <section class="py-24 px-8 bg-white border-t border-black/[0.03]">
-        <div class="max-w-7xl mx-auto text-center md:text-left">
+        <div class="max-w-7xl mx-auto">
             <div class="apple-card p-10">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
                     <div>
@@ -258,15 +263,15 @@
         </div>
     </section>
 
-    <!-- Contact Section: 严谨对称 5:5 布局，办公室、Email、社交完整呈现 -->
+    <!-- Contact Section: 严谨对称 5:5 布局 -->
     <section id="contact" class="py-40 bg-k-light/40 border-t border-black/[0.03]">
         <div class="max-w-7xl mx-auto px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-stretch">
                 
-                <!-- 左侧：视觉对齐矩阵 (高度平衡右侧) -->
-                <div class="flex flex-col justify-between py-6 text-left h-full">
-                    <div class="space-y-8">
-                        <h2 class="hero-heading text-3xl md:text-[52px] font-[900] leading-[1.1]">
+                <!-- 左侧：视觉矩阵 -->
+                <div class="flex flex-col justify-between py-8 text-left h-full">
+                    <div class="space-y-10">
+                        <h2 class="hero-heading text-3xl md:text-[50px] font-[900] leading-[1.1]">
                             <span class="block text-black" data-i18n="contact-title-1">Curate Your</span>
                             <span class="block gold-gradient" data-i18n="contact-title-2">Global Legacy</span>
                         </h2>
@@ -275,8 +280,8 @@
                         </p>
                     </div>
                     
-                    <!-- 社交快捷 -->
-                    <div class="grid grid-cols-3 gap-5 max-w-sm mt-12 mb-12">
+                    <!-- 社交 -->
+                    <div class="grid grid-cols-3 gap-5 max-w-md">
                         <a href="#" class="icon-btn flex flex-col items-center gap-4 p-6 rounded-[30px]">
                             <svg class="w-6 h-6 text-green-500/70" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M15.75 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z"/></svg>
                             <span class="text-[7px] font-[900] uppercase tracking-[0.2em] opacity-30">WhatsApp</span>
@@ -291,8 +296,8 @@
                         </button>
                     </div>
 
-                    <!-- 办公室与邮箱矩阵 -->
-                    <div class="grid grid-cols-2 gap-8 pt-10 border-t border-black/[0.05]">
+                    <!-- 地址矩阵 -->
+                    <div class="grid grid-cols-2 gap-8 pt-12 border-t border-black/[0.05]">
                         <div><h4 class="text-[9px] font-bold uppercase tracking-widest opacity-40 mb-1" data-i18n="loc-london">London</h4><p class="text-xs font-semibold">Mayfair, W1K</p></div>
                         <div><h4 class="text-[9px] font-bold uppercase tracking-widest opacity-40 mb-1" data-i18n="loc-dubai">Dubai</h4><p class="text-xs font-semibold">DIFC, Level 15</p></div>
                         <div class="col-span-2 mt-4">
@@ -333,7 +338,7 @@
         </div>
     </section>
 
-    <!-- Portfolio Drawer -->
+    <!-- Side Drawer -->
     <div id="portfolio-overlay" onclick="closeDrawer()" class="fixed inset-0 bg-black/10 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity z-[60]"></div>
     <div id="portfolio-drawer" class="fixed top-0 right-0 w-full md:w-[580px] h-full bg-white z-[70] translate-x-full shadow-2xl p-16 overflow-y-auto">
         <div class="flex justify-between items-center mb-20 px-4">
@@ -371,19 +376,19 @@
                 "nav-portfolio": "ポートフォリオ", "nav-contact": "連絡先",
                 "hero-title-1": "自由は", "hero-title-2": "究極の資産である", "hero-desc": "世界で最も洗练された市民権ポートフォリオ。あなたの主権を再定義します。",
                 "loc-london": "ロンドン", "loc-dubai": "ドバイ", "form-email-label": "メール",
-                "btn-submit": "送信する", "form-success": "受領しました", "lang-name": "日本語"
+                "form-name": "お名前", "form-email": "メールアドレス", "form-message": "詳細内容", "btn-submit": "送信する", "form-success": "受領しました", "lang-name": "日本語"
             },
             ko: {
                 "nav-portfolio": "포트폴리오", "nav-contact": "문의",
                 "hero-title-1": "자유는", "hero-title-2": "궁극의 자산입니다", "hero-desc": "세계에서 가장 포괄적인 거주권 건축 포트폴리오. 신분을 넘어선 가치를 설계합니다。",
                 "loc-london": "런던", "loc-dubai": "두바이", "form-email-label": "이메일",
-                "btn-submit": "문의 제출", "form-success": "접수되었습니다", "lang-name": "한국어"
+                "form-name": "이름", "form-email": "이메일", "form-message": "상담 상세", "btn-submit": "문의 제출", "form-success": "접수되었습니다", "lang-name": "한국어"
             },
             id: {
                 "nav-portfolio": "Portofolio", "nav-contact": "Kontak",
                 "hero-title-1": "Kebebasan adalah", "hero-title-2": "Aset Kedaulatan Tertinggi", "hero-desc": "Arsitektur kewarganegaraan paling komprehensif untuk masa depan kedaulatan Anda。",
                 "loc-london": "London", "loc-dubai": "Dubai", "form-email-label": "Surel",
-                "btn-submit": "Kirim", "form-success": "Disalin", "lang-name": "ID"
+                "form-name": "Nama Lengkap", "form-email": "Surel", "form-message": "Detail", "btn-submit": "Kirim", "form-success": "Disalin", "lang-name": "ID"
             }
         };
 
